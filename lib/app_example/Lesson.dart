@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/data/data.dart';
 import 'package:myapp/models/Child.dart';
 import 'package:myapp/models/User_Model.dart';
 
@@ -9,6 +10,7 @@ import 'package:myapp/models/lesson_model.dart';
 import 'package:myapp/services/LessonService.dart';
 import 'package:myapp/services/Login_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ChildHome.dart';
 import 'Login_Screen.dart';
@@ -30,11 +32,12 @@ class Lesson extends StatelessWidget {
       body: FutureBuilder<LessonModel>(
         future: api.getLesson(lessonId),
         builder: (context, snapshot) {
-          print(snapshot);
           if (snapshot.hasError) print(snapshot.error);
 
           return snapshot.hasData
-              ? LessonContent(lesson: snapshot.data!)
+              ? Container(
+                  alignment: Alignment.center,
+                  child: LessonContent(lesson: snapshot.data!))
               : Center(child: CircularProgressIndicator());
         },
       ),
@@ -45,43 +48,53 @@ class Lesson extends StatelessWidget {
 class LessonContent extends StatelessWidget {
   final LessonModel lesson;
 
-  LessonContent({Key? key, required this.lesson}) : super(key: key);
-  String image = "https://localhost:5001/src/images/";
+  late SharedPreferences logindata;
+  void initiate() async {
+    logindata = await SharedPreferences.getInstance();
+  }
+
+  LessonContent({Key? key, required this.lesson}) : super(key: key) {
+    initiate();
+  }
+  String image = "https://192.168.0.105:5001/src/images/";
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.all(10.0),
-      children: <Widget>[
-        Container(
+    return Container(
+      alignment: Alignment.center,
+      constraints: BoxConstraints(maxWidth: 500),
+      child: ListView(
+        padding: EdgeInsets.all(10.0),
+        children: <Widget>[
+          Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
+              child: Text(
+                lesson.lessonTitle.toString(),
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 25),
+              )),
+          Image.network(
+            //'assets/numbersimage.jpeg',
+            image + lesson.imageUrl.toString(),
             alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(10, 30, 10, 30),
-            child: Text(
-              lesson.lessonTitle.toString(),
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 25),
-            )),
-        Image.asset(
-          'assets/numbersimage.jpeg',
-          //image + lesson.imageUrl.toString(),
-          alignment: Alignment.center,
-          //errorBuilder: (context, url, error) => new Icon(Icons.error),
-        ),
-        Container(
-            height: 300,
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(10, 30, 10, 10),
-            child: Text(
-              lesson.content.toString(),
-              style: TextStyle(color: Colors.black, fontSize: 18),
-            )),
-        SizedBox(
-            height: 100,
+            errorBuilder: (context, url, error) => new Icon(Icons.error),
+          ),
+          Container(
+              padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+              height: 350,
+              child: ListView(children: [
+                Text(
+                  lesson.content.toString(),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                )
+              ])),
+          SizedBox(
+            height: 80,
             child: Card(
               elevation: 4,
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
                 children: [
                   Container(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -111,7 +124,10 @@ class LessonContent extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ChildHome(5)));
+                                      builder: (context) => ChildHome(int.parse(
+                                          logindata
+                                              .getInt("ChildId")
+                                              .toString()))));
                             },
                             child: Padding(
                                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -156,8 +172,10 @@ class LessonContent extends StatelessWidget {
                       )),
                 ],
               ),
-            )),
-      ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

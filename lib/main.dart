@@ -2,6 +2,7 @@ import 'dart:io';
 
 import "package:flutter/material.dart";
 import 'package:myapp/app_example/ChildHome1.dart';
+import 'package:myapp/app_example/Lesson.dart';
 import 'package:myapp/app_example/Quiz.dart';
 import 'package:myapp/app_example/Subscription_Page.dart';
 import 'package:myapp/app_example/Welcome_Page.dart';
@@ -46,11 +47,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     HttpOverrides.global = new MyHttpOverrides();
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blueGrey),
+      theme: ThemeData(primaryColor: Colors.lightBlue.shade400),
       home: newuser == false
-          //? QuizScreen(lessonId: 13)
+          // ? Lesson(40)
           ? WelcomePage(preferences?.getInt('UserId'))
-          : QuizScreen(lessonId: 13),
+          : LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }

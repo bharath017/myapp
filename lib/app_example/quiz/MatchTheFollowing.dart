@@ -59,6 +59,17 @@ class _MatchTheFollowingState extends State<MatchTheFollowing> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(MatchTheFollowing oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    setState(() {
+      _controller = ScrollController();
+      initState();
+      generateArray(widget.options);
+    });
+  }
+
   List data1 = [];
   List<globalsd> gl = [globalsd(), globalsd(), globalsd(), globalsd()];
   List data2 = [];

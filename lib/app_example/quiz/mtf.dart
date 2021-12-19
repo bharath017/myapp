@@ -56,6 +56,40 @@ class _MatchTheFollowingState extends State<MatchTheFollowing2> {
     super.initState();
   }
 
+  static bool sub = false;
+  @override
+  void didUpdateWidget(MatchTheFollowing2 oldWidget) {
+    if (sub) {
+      sub = false;
+      super.didUpdateWidget(oldWidget);
+      print("updating");
+      setState(() {
+        gl = [];
+        gl = [globalsd(), globalsd(), globalsd(), globalsd()];
+        gl.forEach((element) {
+          element.ghost = false;
+        });
+        data1 = [];
+        data2 = [];
+        mappedArray = [];
+        mapped1 = [];
+        mapped2 = [];
+        answer = [];
+        targetlist = new List.filled(4, '');
+        mappedIndex1 = [];
+        mappedIndex2 = [];
+        for (int i = 0; i < widget.options.length; i++) {
+          data1.add(widget.options[i].answerOption!.split("=")[0]);
+          data2.add(widget.options[i].answerOption!.split("=")[1]);
+        }
+        data1.shuffle();
+        data2.shuffle();
+
+        // generateArray(widget.options);
+      });
+    }
+  }
+
   List data1 = [];
   List<globalsd> gl = [globalsd(), globalsd(), globalsd(), globalsd()];
   List data2 = [];
@@ -73,7 +107,6 @@ class _MatchTheFollowingState extends State<MatchTheFollowing2> {
   List mapped2 = [];
 
   late ProgressTimeline screenProgress;
-  List<SingleState> allStages = [];
   double someval = 0.1;
   @override
   Widget build(BuildContext context) {
@@ -144,7 +177,9 @@ class _MatchTheFollowingState extends State<MatchTheFollowing2> {
                                         height: 80,
                                         width: 80,
                                         child: draggablebox(
-                                            option: data1[index], index: index),
+                                            option: data1[index],
+                                            index: index,
+                                            gl: gl[index]),
                                       ),
                                     )),
                           )
@@ -309,6 +344,8 @@ class _MatchTheFollowingState extends State<MatchTheFollowing2> {
   }
 
   static List getAnswer() {
+    sub = true;
+
     return answer;
   }
 
@@ -366,27 +403,40 @@ class UIPainter extends CustomPainter {
 class draggablebox extends StatefulWidget {
   String option;
   int index;
-  draggablebox({Key? key, required this.option, required this.index})
+  globalsd gl;
+  draggablebox(
+      {Key? key, required this.option, required this.index, required this.gl})
       : super(key: key);
   @override
-  State<StatefulWidget> createState() => new _DragState(option, index);
+  State<StatefulWidget> createState() => new _DragState(option, index, gl);
 }
 
 class _DragState extends State<draggablebox> {
   String option;
   int index;
-  _DragState(this.option, this.index);
-  List<globalsd> gl = [globalsd(), globalsd(), globalsd(), globalsd()];
+  globalsd gl;
+  @override
+  void didUpdateWidget(draggablebox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {});
+  }
+
+  clearLines() {
+    // gl = [globalsd(), globalsd(), globalsd(), globalsd()];
+  }
+
+  _DragState(this.option, this.index, this.gl);
+
   @override
   Widget build(BuildContext context) {
     _MatchTheFollowingState cll = new _MatchTheFollowingState();
     return Draggable(
         key: ValueKey(widget.option),
         feedback: Container(),
-        data: option,
+        data: widget.option,
         onDragStarted: () {
           cll.setthesource(index);
-          gl[index].ghost = true;
+          widget.gl.ghost = true;
         },
         onDragUpdate: (DragUpdateDetails details) {
           setState(() {
@@ -395,14 +445,14 @@ class _DragState extends State<draggablebox> {
 
             Offset off = Offset(pos.dx, (pos.dy));
 
-            gl[index].tapPos = details.localPosition - off;
-            gl[index].repaint = true;
+            widget.gl.tapPos = details.localPosition - off;
+            widget.gl.repaint = true;
           });
         },
         onDragEnd: (DraggableDetails details) {
           setState(() {
-            gl[index].ghost = false;
-            gl[index].repaint = true;
+            widget.gl.ghost = false;
+            widget.gl.repaint = true;
           });
         },
         child: Container(
@@ -413,10 +463,10 @@ class _DragState extends State<draggablebox> {
               borderRadius: BorderRadius.circular(10)),
           alignment: Alignment.centerRight,
           child: CustomPaint(
-            painter: UIPainter(gl[index]),
+            painter: UIPainter(widget.gl),
             size: Size.fromRadius(40),
             child: Center(
-              child: Text(option),
+              child: Text(widget.option),
             ),
           ),
         ));

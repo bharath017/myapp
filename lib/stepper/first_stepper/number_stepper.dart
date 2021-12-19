@@ -98,7 +98,7 @@ class NumberStepper extends StatelessWidget {
     this.activeStepBorderWidth = 0.5,
     this.activeStepBorderPadding = 1.0,
     this.lineColor,
-    this.lineLength = 50.0,
+    this.lineLength = 45.0,
     this.lineDotRadius = 1.0,
     this.stepRadius = 24.0,
     this.stepReachedAnimationEffect = Curves.bounceOut,

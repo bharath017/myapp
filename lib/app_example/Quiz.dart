@@ -91,7 +91,7 @@ class _QuizWidgetState extends State<QuizWidget> {
   List<SingleState> allStages = [];
   _QuizWidgetState(this.quiz) {
     allStages = new List<SingleState>.generate(
-        quiz.quiz!.length,
+        quiz.quiz?.length ?? 0,
         (i) => SingleState(
             stateTitle: (i + 1).toString(), isFailed: false, isChecked: false));
   }
@@ -153,9 +153,7 @@ class _QuizWidgetState extends State<QuizWidget> {
     var _screenHeight = MediaQuery.of(context).size.height;
     var orientation = MediaQuery.of(context).orientation;
     var safePadding = MediaQuery.of(context).padding.left;
-    print("safe area left = " + safePadding.toString());
     var safePaddingright = MediaQuery.of(context).padding.left;
-    print("safe area right= " + safePaddingright.toString());
 
     setState(() {
       if (orientation == Orientation.landscape) {
@@ -463,9 +461,13 @@ class _QuizWidgetState extends State<QuizWidget> {
       String? correctAnswer =
           options.firstWhere((x) => x.isCorrect == true).answerOption;
       var arr = correctAnswer!.split(";");
-      List<String> d1 = (arr[0].split(","));
+      List<String> d1 = (arr[0].split("=")[1].split(","));
+      var a1 = arr[0].split("=")[1];
+      var a2 = arr[1].split("=")[1];
+      String ans = a1 + ';' + a2;
+      print(ans);
       d1.sort();
-      List<String> d2 = (arr[1].split(","));
+      List<String> d2 = (arr[1].split("=")[1].split(","));
       d2.sort();
       String answer = d1.toString() + d2.toString();
       answer = answer.replaceAll('][', ';');
@@ -478,7 +480,7 @@ class _QuizWidgetState extends State<QuizWidget> {
       } else if (subans == answer) {
         QuizAnswers quiz = new QuizAnswers();
         quiz.answerId = 0;
-        quiz.answerOption = answer;
+        quiz.answerOption = ans;
         quiz.questionId = questionId;
         quiz.questionType = type;
 

@@ -23,10 +23,12 @@ class _OddnEvenState extends State<oddandeven> {
 
   static List<String> data2 = [];
   static List<String> data3 = [];
-
+  String category1 = '';
+  String category2 = '';
   Offset position = Offset(0.0, 0.0);
   List<String> data1 = [];
   static bool sub = false;
+  String correctAnswer = '';
   @override
   void initState() {
     super.initState();
@@ -43,6 +45,8 @@ class _OddnEvenState extends State<oddandeven> {
         setState(() {
           data1.add(widget.options[i].answerOption.toString());
         });
+      } else if (widget.options[i].isCorrect == true) {
+        correctAnswer = widget.options[i].answerOption.toString();
       }
     }
   }
@@ -120,7 +124,7 @@ class _OddnEvenState extends State<oddandeven> {
               children: [
                 Container(
                   //  padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                  height: 110,
+                  height: data1.length > 4 ? 220 : 110,
                   width: bigBixwidth,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -266,7 +270,7 @@ class _OddnEvenState extends State<oddandeven> {
                           padding: EdgeInsets.all(10),
                           width: bigBixwidth / 2,
                           child: (Text(
-                            "ODD",
+                            correctAnswer.split(";")[0].split("=")[0],
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
@@ -441,7 +445,7 @@ class _OddnEvenState extends State<oddandeven> {
                           padding: EdgeInsets.all(10),
                           width: bigBixwidth / 2,
                           child: (Text(
-                            "EVEN",
+                            correctAnswer.split(";")[1].split("=")[0],
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,

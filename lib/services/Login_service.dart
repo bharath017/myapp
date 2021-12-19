@@ -44,7 +44,7 @@ class LoginService {
       this.preferences?.setInt('UserId', mod.Id);
       this.preferences?.setString("Token", mod.Token.toString());
       this.preferences?.setBool("isLoggedIn", true);
-      return UserModel.fromJson(jsonDecode(response.body));
+      return mod;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -57,7 +57,8 @@ class LoginService {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return UserModel.fromJson(jsonDecode(response.body));
+      // return UserModel.fromJson(jsonDecode(response.body));
+      throw Exception("Wrong username or password");
     }
 
     // final Response response = await post(
@@ -77,6 +78,7 @@ class LoginService {
   Future<List<Child>> getChildList(userId) async {
     String url = api.geturl + 'Users/Child/' + userId.toString();
     final res = await get(Uri.parse(url));
+
     if (res.statusCode == 200) {
       return compute(parsedata, res.body);
     } else {

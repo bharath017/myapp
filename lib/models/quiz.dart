@@ -22,7 +22,7 @@ class Quiz {
 
   factory Quiz.fromJson(Map<String, dynamic> json) => Quiz(
         questionId: json['QuestionId'] as int?,
-        question: json['Question'] as String?,
+        question: json['Questions'] as String?,
         imageUrl: json['ImageUrl'],
         questionType: json['QuestionType'] as int?,
         options: (json['Options'] as List<dynamic>?)
@@ -32,7 +32,7 @@ class Quiz {
 
   Map<String, dynamic> toJson() => {
         'QuestionId': questionId,
-        'Question': question,
+        'Questions': question,
         'ImageUrl': imageUrl,
         'QuestionType': questionType,
         'Options': options?.map((e) => e.toJson()).toList(),

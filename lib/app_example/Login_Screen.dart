@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/app_example/Sign_Up.dart';
 import 'package:myapp/models/Login_Model.dart';
+import 'package:myapp/models/User_Model.dart';
 import 'package:myapp/services/Login_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,8 +18,15 @@ class _State extends State<LoginPage> {
   final cun = "bharath@gmail.com";
   final cp = "12345";
   String errorText = '';
+
+  ButtonState state = ButtonState.init;
+  // update the UI depending on below variable values
+
   @override
   Widget build(BuildContext context) {
+    final buttonWidth = MediaQuery.of(context).size.width;
+    final isInit = isAnimating || state == ButtonState.init;
+    final isDone = state == ButtonState.completed;
     return Scaffold(
         appBar: AppBar(
           title: Text('Welcome'),
@@ -131,27 +139,22 @@ class _State extends State<LoginPage> {
                             child: Text('Forgot Password'),
                           ),
                           Container(
-                              height: 50,
-                              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                              child: ElevatedButton(
-                                style: TextButton.styleFrom(
-                                  primary: Colors.white,
-                                ),
-                                child: Text('Login',
-                                    style: TextStyle(fontSize: 25)),
-                                onPressed: () {
-                                  formKey.currentState!.save();
-                                  if (formKey.currentState!.validate()) {
-                                    final res = api.login(
-                                        loginmodel(
-                                            Username: nameController.text,
-                                            Password: passwordController.text),
-                                        context);
-
-                                    print(res);
-                                  }
-                                },
-                              )),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10),
+                            child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                onEnd: () => setState(() {
+                                      isAnimating = !isAnimating;
+                                    }),
+                                width: state == ButtonState.init
+                                    ? buttonWidth
+                                    : 70,
+                                height: 60,
+                                // If Button State is Submiting or Completed  show 'buttonCircular' widget as below
+                                child: isInit
+                                    ? buildButton()
+                                    : circularContainer(isDone)),
+                          ),
                           Container(
                               child: Row(
                             children: <Widget>[
@@ -177,7 +180,157 @@ class _State extends State<LoginPage> {
                         ]))))));
   }
 
+  Widget buildButton() => ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+        onPressed: () async {
+          formKey.currentState!.save();
+          if (formKey.currentState!.validate()) {
+            setState(() {
+              print("Submitting");
+              state = ButtonState.submitting;
+            });
+            Future<UserModel> res = api.login(
+                loginmodel(
+                    Username: nameController.text,
+                    Password: passwordController.text),
+                context);
+            // res.then((value) => print(value));
+            // res.catchError(changeButton());
+            res.onError((error, stackTrace) => changeButton());
+          } else {
+            setState(() {
+              state = ButtonState.init;
+            });
+          }
+
+          // await Future.delayed(Duration(seconds: 2));
+          // setState(() {
+          //   state = ButtonState.completed;
+          // });
+          // await Future.delayed(Duration(seconds: 2));
+          // setState(() {
+          //   state = ButtonState.init;
+          // });
+        },
+        child: const Text('Login', style: TextStyle(fontSize: 20)),
+      );
+
+  // this is custom Widget to show rounded container
+  // here is state is submitting, we are showing loading indicator on container then.
+  // if it completed then showing a Icon.
+  changeButton() {
+    setState(() {
+      state = ButtonState.init;
+    });
+  }
+
+  Widget circularContainer(bool done) {
+    final color = done ? Colors.green : Colors.blue;
+    return Container(
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      child: Center(
+        child: done
+            ? const Icon(Icons.done, size: 50, color: Colors.white)
+            : const CircularProgressIndicator(
+                color: Colors.white,
+              ),
+      ),
+    );
+  }
+
   bool checkPassword(userName, password) {
     return cun == userName && cp == password;
+  }
+}
+
+class SubmitButton extends StatelessWidget {
+  const SubmitButton({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return ButtonStates();
+    ;
+  }
+}
+
+bool isAnimating = true;
+
+//enum to declare 3 state of button
+enum ButtonState { init, submitting, completed }
+
+class ButtonStates extends StatefulWidget {
+  const ButtonStates({Key? key}) : super(key: key);
+
+  @override
+  _ButtonStatesState createState() => _ButtonStatesState();
+}
+
+class _ButtonStatesState extends State<ButtonStates> {
+  ButtonState state = ButtonState.init;
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonWidth = MediaQuery.of(context).size.width;
+
+    // update the UI depending on below variable values
+    final isInit = isAnimating || state == ButtonState.init;
+    final isDone = state == ButtonState.completed;
+
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(40),
+      child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          onEnd: () => setState(() {
+                isAnimating = !isAnimating;
+              }),
+          width: state == ButtonState.init ? buttonWidth : 70,
+          height: 60,
+          // If Button State is Submiting or Completed  show 'buttonCircular' widget as below
+          child: isInit ? buildButton() : circularContainer(isDone)),
+    );
+  }
+
+  // If Button State is init : show Normal submit button
+  Widget buildButton() => ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+        onPressed: () async {
+          // here when button is pressed
+          // we are changing the state
+          // therefore depending on state our button UI changed.
+          setState(() {
+            state = ButtonState.submitting;
+          });
+
+          //await 2 sec // you need to implement your server response here.
+          await Future.delayed(Duration(seconds: 2));
+          setState(() {
+            state = ButtonState.completed;
+          });
+          await Future.delayed(Duration(seconds: 2));
+          setState(() {
+            state = ButtonState.init;
+          });
+        },
+        child: const Text('Login'),
+      );
+
+  // this is custom Widget to show rounded container
+  // here is state is submitting, we are showing loading indicator on container then.
+  // if it completed then showing a Icon.
+
+  Widget circularContainer(bool done) {
+    final color = done ? Colors.green : Colors.blue;
+    return Container(
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      child: Center(
+        child: done
+            ? const Icon(Icons.done, size: 50, color: Colors.white)
+            : const CircularProgressIndicator(
+                color: Colors.white,
+              ),
+      ),
+    );
   }
 }

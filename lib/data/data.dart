@@ -36,3 +36,15 @@ final allAnimals = [
     imageUrl: 'assets/animal3.png',
   ),
 ];
+
+class ChildId {
+  late int child_id;
+
+  int get getChildId {
+    return child_id;
+  }
+
+  set setChildId(int childid) {
+    child_id = childid;
+  }
+}

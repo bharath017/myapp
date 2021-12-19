@@ -114,8 +114,8 @@ class _ArrowPainter extends CustomPainter {
         if (orientation == Orientation.portrait) {
           correction = 0;
         } else {
-          //correction = 48;
-          correction = 0;
+          correction = 48;
+          // correction = 0;
         }
         final startPosition = widget.sourceAnchor
             .resolve(_direction)

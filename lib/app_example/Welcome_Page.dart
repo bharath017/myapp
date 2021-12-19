@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/data/data.dart';
 import 'package:myapp/models/Child.dart';
 import 'package:myapp/models/User_Model.dart';
 import 'package:myapp/services/Login_service.dart';
@@ -43,11 +44,18 @@ class WelcomePage extends StatelessWidget {
                 future: api.getChildList(Id),
                 builder: (context, snapshot) {
                   print(snapshot);
-                  if (snapshot.hasError) print(snapshot.error);
-
-                  return snapshot.hasData
-                      ? ChildrenList(children: snapshot.data!)
-                      : Center(child: CircularProgressIndicator());
+                  if (snapshot.hasError) {
+                    print("below is error");
+                    return Container(
+                      child: Text('No children added'),
+                      padding: EdgeInsets.all(20),
+                    );
+                    //print(snapshot.error);
+                  } else {
+                    return snapshot.hasData
+                        ? ChildrenList(children: snapshot.data!)
+                        : Center(child: CircularProgressIndicator());
+                  }
                 },
               ),
               Expanded(
@@ -58,8 +66,7 @@ class WelcomePage extends StatelessWidget {
                     color: Colors.blue.shade200,
                     child: TextButton(
                         onPressed: () {
-                          launch(
-                              'https://docs.flutter.io/flutter/services/UrlLauncher-class.html');
+                          launch('http://localhost:4200/');
                         },
                         child: Text(
                           'Login as parent',
@@ -89,6 +96,7 @@ class _ChildrenListState extends State<ChildrenList> {
     super.initState();
   }
 
+  ChildId x = new ChildId();
   late SharedPreferences logindata;
   void initiate() async {
     logindata = await SharedPreferences.getInstance();
@@ -109,6 +117,7 @@ class _ChildrenListState extends State<ChildrenList> {
           return Card(
               child: InkWell(
             onTap: () {
+              x.setChildId = children[index].ChildId;
               logindata.setInt("ChildId", children[index].ChildId);
               Navigator.push(
                 context,
