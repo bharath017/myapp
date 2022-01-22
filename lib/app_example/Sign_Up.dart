@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:myapp/app_example/Subscription_Page.dart';
 import 'package:myapp/models/User.dart';
 import 'package:myapp/models/User_Model.dart';
@@ -15,6 +16,7 @@ class _State extends State<SignUp> {
   TextEditingController UserNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmpasswordController = TextEditingController();
+  CardEditController cd = CardEditController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final SignUpService api = SignUpService();
   var userName;
@@ -237,7 +239,9 @@ class _State extends State<SignUp> {
                             ),
                             child:
                                 Text('Sign Up', style: TextStyle(fontSize: 24)),
-                            onPressed: () {
+                            onPressed: () async {
+                              print("working");
+
                               formKey.currentState!.save();
                               if (formKey.currentState!.validate()) {
                                 api.signup(

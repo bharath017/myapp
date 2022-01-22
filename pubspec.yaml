@@ -41,6 +41,7 @@ dependencies:
   draw_arrow: ^1.0.0
   vs_scrollbar: ^0.2.1
   url_launcher: ^6.0.10
+  flutter_stripe: ^2.1.1
 
 
 dev_dependencies:

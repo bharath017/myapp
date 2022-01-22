@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart';
+import 'package:myapp/app_example/StripeTest.dart';
 import 'package:myapp/evnironment/Api.dart';
 import 'package:myapp/models/ChildModel.dart';
 import 'package:myapp/models/SubscriptionModel.dart';
@@ -14,6 +16,7 @@ import 'package:myapp/models/Child1.dart';
 import 'package:myapp/models/Plan.dart';
 import 'package:myapp/models/User_Model.dart';
 import 'package:myapp/models/user1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Login_Screen.dart';
 import 'Welcome_Page.dart';
@@ -48,6 +51,7 @@ class _State extends State<Subscription> {
   _State(this.userdata);
   ApiURL api = new ApiURL();
   final SignUpService api1 = SignUpService();
+  SharedPreferences? preferences;
   @override
   void initState() {
     super.initState();
@@ -300,7 +304,7 @@ class _State extends State<Subscription> {
                           'Subscribe',
                           //style: TextStyle(fontSize: 18),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           if (dropdownValue == '') {
                             final snackBar = SnackBar(
                               content: const Text('Please Select Plan type'),
@@ -440,7 +444,7 @@ class _CartState extends State<_CartList> {
     return ListView.builder(
         itemCount: _cart.length,
         itemBuilder: (context, index) {
-          return Card(
+          return Container(
             child: InkWell(
               onTap: () {
                 Navigator.push(

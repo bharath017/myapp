@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:myapp/app_example/StripeTest.dart';
 import 'package:myapp/app_example/Subscription_Page.dart';
 import 'package:myapp/app_example/Welcome_Page.dart';
 import 'package:myapp/evnironment/Api.dart';
@@ -17,8 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpService {
   SharedPreferences? preferences;
-  // static String apiUrl = "";
-//  final String apiUrl = "https://localhost:5001/Users/";
+
   ApiURL api = new ApiURL();
   Future<UserModel> login(user2 usermodel, BuildContext context) async {
     Map data = {
@@ -105,6 +105,30 @@ class SignUpService {
     fixable = fixable.replaceAll('"{', '{');
     fixable = fixable.replaceAll('}"', '}');
 
+    this.preferences = await SharedPreferences.getInstance();
+    this.preferences?.setString("SubData", fixable);
+
+    this.preferences?.setInt('UserId', formdata.UserId);
+    print("Below is user id");
+    print(this.preferences?.getInt("UserId"));
+    this.preferences?.setInt('PlanId', formdata.PlanId);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PaymentScreen()));
+  }
+
+  void Subscribe1(String fixable, BuildContext context) async {
+    final jsonEncoder = JsonEncoder();
+    // Map data = {
+    //   'UserId': formdata.UserId,
+    //   'PlanId': formdata.PlanId,
+    //   'Children': formdata.Children,
+    // };
+
+    // String fixable = jsonEncode(data);
+    // fixable = fixable.replaceAll(r'\"', '"');
+    // fixable = fixable.replaceAll('"{', '{');
+    // fixable = fixable.replaceAll('}"', '}');
+
     final response = await http.post(
       Uri.parse(api.geturl + 'Subscription/Subscribe'),
       headers: <String, String>{
@@ -115,14 +139,23 @@ class SignUpService {
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
+
       UserModel mod = UserModel.fromJson(jsonDecode(response.body));
+
+      final res = await http.get(
+          Uri.parse(
+              api.geturl + 'Payments/SubscribeToStripe/' + mod.Id.toString()),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => WelcomePage(mod.Id)));
       this.preferences = await SharedPreferences.getInstance();
-
       this.preferences?.setInt('UserId', mod.Id);
       this.preferences?.setString("Token", mod.Token.toString());
       this.preferences?.setBool("isLoggedIn", true);
+
       return UserModel.fromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,

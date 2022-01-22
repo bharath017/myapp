@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_example/ChildHome.dart';
 import 'app_example/Login_Screen.dart';
+import 'app_example/StripeTest.dart';
 import 'app_example/dnd4.dart';
 import 'app_example/dragndrop.dart';
 import 'app_example/dragndrop2.dart';
@@ -27,7 +28,10 @@ import 'app_example/quiz/newLines.dart';
 import 'models/Child1.dart';
 import 'models/ChildModel.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   SharedPreferences? preferences;
@@ -52,6 +56,7 @@ class MyApp extends StatelessWidget {
           // ? Lesson(40)
           ? WelcomePage(preferences?.getInt('UserId'))
           : LoginPage(),
+      //: PaymentScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

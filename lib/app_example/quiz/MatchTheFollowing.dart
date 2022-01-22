@@ -117,8 +117,8 @@ class _MatchTheFollowingState extends State<MatchTheFollowing> {
     });
 
     setprogressbar();
-    screenProgress.connectorLength = connectorlength;
-    screenProgress.iconSize = iconsize;
+    // screenProgress.connectorLength = connectorlength;
+    // screenProgress.iconSize = iconsize;
 
     return ArrowContainer(
         con: context,

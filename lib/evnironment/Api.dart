@@ -5,10 +5,10 @@ class ApiURL {
 
   String get geturl {
     if (Platform.isAndroid) {
-      return "https://192.168.0.105:5001/";
+      return "http://192.168.0.101:5000/";
       // return "https://10.0.2.2:5001/";
     } else {
-      return "https://192.168.0.105:5001/";
+      return "http://192.168.0.101:5000/";
       //return "https://localhost:5001/";
     }
   }

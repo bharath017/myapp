@@ -2,27 +2,53 @@ PODS:
   - Flutter (1.0.0)
   - shared_preferences (0.0.1):
     - Flutter
+  - Stripe (21.9.1):
+    - Stripe/Stripe3DS2 (= 21.9.1)
+    - StripeCore (= 21.9.1)
+    - StripeUICore (= 21.9.1)
+  - Stripe/Stripe3DS2 (21.9.1):
+    - StripeCore (= 21.9.1)
+    - StripeUICore (= 21.9.1)
+  - stripe_ios (0.0.1):
+    - Flutter
+    - Stripe (~> 21.9.0)
+  - StripeCore (21.9.1)
+  - StripeUICore (21.9.1):
+    - StripeCore (= 21.9.1)
   - url_launcher (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Stripe
+    - StripeCore
+    - StripeUICore
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  stripe_ios:
+    :path: ".symlinks/plugins/stripe_ios/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  Stripe: 22c1b8da5ee20a1aaf40fd198160efa72e71644a
+  stripe_ios: fce03ba840e641cc31ff5bdb67f5d5b9c938b897
+  StripeCore: 91ea038ac0abbb72f11014044dfd1e5d39089714
+  StripeUICore: 7edf64b24c9c178bfd97e988f2cffdbb7a7628b0
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: efd0484562880d9626e3b08e948668bad1875b61
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
